@@ -22,8 +22,8 @@ import { cilLockLocked, cilUser } from '@coreui/icons'
 const Login = () => {
   const { userLoggedIn } = useAuth()
   console.log(userLoggedIn)
-    const [email, setEmail] = useState('absiddik517@gmail.com')
-    const [password, setPassword] = useState('1234567')
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
     const [isSigningIn, setIsSigningIn] = useState(false)
     const [errorMessage, setErrorMessage] = useState('')
 

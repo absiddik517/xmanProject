@@ -8,6 +8,7 @@ import {
   CCard,
   CCardBody,
   CCol,
+  CSpinner,
   CContainer,
   CForm,
   CFormInput,
@@ -27,31 +28,40 @@ const Register = () => {
     const [isRegistering, setIsRegistering] = useState(false)
     const [errorMessage, setErrorMessage] = useState('')
 
-    const userLoggedIn = useAuth()
+    const { userLoggedIn } = useAuth()
 
     const onSubmit = async (e) => {
         e.preventDefault()
-        if(!isRegistering) {
+        if(confirmPassword == password) {
+          setErrorMessage('')
             setIsRegistering(true)
             await doCreateUserWithEmailAndPassword(email, password).catch(error => {
               setErrorMessage(error.message)
               setIsRegistering(false)
             })
+        }else{
+          setErrorMessage('Password and confirm password does not match!')
         }
     }
   return (
     <div className="bg-body-tertiary min-vh-100 d-flex flex-row align-items-center">
+      {userLoggedIn && (<Navigate to={'/dashboard'} replace={true} />)}
       <CContainer>
         <CRow className="justify-content-center">
           <CCol md={9} lg={7} xl={6}>
             <CCard className="mx-4">
               <CCardBody className="p-4">
-                <CForm>
+                <CForm onSubmit={onSubmit}>
                   <h1>Register</h1>
                   <p className="text-body-secondary">Create your account</p>
+                  <div>&nbsp; {errorMessage}</div>
                   <CInputGroup className="mb-3">
                     <CInputGroupText>@</CInputGroupText>
-                    <CFormInput placeholder="Email" autoComplete="email" />
+                    <CFormInput 
+                    disabled={isRegistering} 
+                    onChange={(e) => setEmail(e.target.value)} 
+                    placeholder="Email"
+                    autoComplete="email" />
                   </CInputGroup>
                   <CInputGroup className="mb-3">
                     <CInputGroupText>
@@ -61,6 +71,8 @@ const Register = () => {
                       type="password"
                       placeholder="Password"
                       autoComplete="new-password"
+                      disabled={isRegistering}
+                      onChange={(e) => setPassword(e.target.value)}
                     />
                   </CInputGroup>
                   <CInputGroup className="mb-4">
@@ -71,10 +83,14 @@ const Register = () => {
                       type="password"
                       placeholder="Repeat password"
                       autoComplete="new-password"
+                      disabled={isRegistering}
+                      onChange={(e) => setconfirmPassword(e.target.value)}
                     />
                   </CInputGroup>
                   <div className="d-grid">
-                    <CButton color="success">Create Account</CButton>
+                    <CButton disabled={isRegistering} onClick={onSubmit} color="success">
+                      Create Account { isRegistering && <CSpinner size="sm"/> }
+                    </CButton>
                   </div>
                 </CForm>
               </CCardBody>
